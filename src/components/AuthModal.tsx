@@ -159,12 +159,16 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 />
               </div>
               <button
-                className="btn-primary w-full mt-2"
+                className="btn-primary w-full h-20 mt-15"
                 type="submit"
                 disabled={isLoading}
               >
                 {isLoading ? 'Signing in...' : 'Log In'}
               </button>
+              <p className="text-P flex justify-center gap-1">
+                <span>If you don't have an account!</span>
+                <span className="text-blue-700"> signUp</span>
+              </p>
             </form>
           ) : (
             <form onSubmit={handleSignUp} className="auth-form">
@@ -223,12 +227,16 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 />
               </div>
               <button
-                className="btn-primary w-full mt-2"
+                className="btn-primary w-full h-20 mt-15"
                 type="submit"
                 disabled={isLoading}
               >
                 {isLoading ? 'Creating account...' : 'Create Account'}
               </button>
+              <p className="text-P flex justify-center gap-1">
+                <span>If you already have an account!</span>
+                <span className="text-blue-700">login</span>
+              </p>
             </form>
           )}
         </div>

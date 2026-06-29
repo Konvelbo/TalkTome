@@ -151,7 +151,7 @@ body {
   color: #fff;
   border: none;
   border-radius: 999px;
-  font-size: 0.875rem;
+  font-size: 1.3rem;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -215,6 +215,10 @@ body {
   animation: fade-in 0.18s ease;
 }
 
+.text-P {
+  color: #111;
+}
+
 .modal-content {
   position: relative;
   background: #fff;
@@ -246,7 +250,8 @@ body {
 
 /* ─── Custom Auth Modal ─────────────────────────────────────── */
 .auth-custom {
-  max-width: 380px;
+  max-width: 700px;
+  width: 600px;
   padding: 1.5rem;
 }
 
@@ -282,6 +287,7 @@ body {
 }
 
 .auth-form {
+  height: 500px;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
@@ -294,7 +300,7 @@ body {
 
 .form-row {
   display: flex;
-  gap: 0.75rem;
+  gap: 1.2rem;
 }
 
 .form-row > * {
@@ -303,11 +309,13 @@ body {
 
 .auth-input {
   width: 100%;
+  height: 60px;
   padding: 0.6rem 0.8rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fafafa;
-  font-size: 0.85rem;
+  font-size: 1.3rem;
+  color: #111;
   font-family: inherit;
   transition:
     border-color 0.15s,

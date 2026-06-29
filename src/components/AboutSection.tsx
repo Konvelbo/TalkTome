@@ -76,7 +76,7 @@ export function AboutSection() {
 
       {/* GITHUB ICON BOTTOM RIGHT */}
       <a
-        href="https://github.com/your-username/talk-to-me"
+        href="https://github.com/Konvelbo/TalkTome.git"
         target="_blank"
         rel="noopener noreferrer"
         className="about-github"

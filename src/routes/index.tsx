@@ -1,10 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useCallback, useEffect, useRef } from 'react'
-import {
-  useQuery,
-  useMutation as useConvexMutation,
-  useConvexAuth,
-} from 'convex/react'
+import { useMutation as useConvexMutation, useConvexAuth } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 
 import { NavBar } from '../components/NavBar'
@@ -33,6 +29,8 @@ function Home() {
   const [error, setError] = useState<string | null>(null)
   const [showAuth, setShowAuth] = useState(false)
   const processedBlobRef = useRef<Blob | null>(null)
+
+  const { isAuthenticated } = useConvexAuth()
 
   const saveTranscription = useConvexMutation(api.transcriptions.save)
 
@@ -85,7 +83,7 @@ function Home() {
     }
 
     run()
-  }, [recorder.audioBlob]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [recorder.audioBlob])
 
   const handleStart = useCallback(async () => {
     processedBlobRef.current = null
@@ -104,6 +102,10 @@ function Home() {
     setError(null)
     processedBlobRef.current = null
   }, [recorder, setTranscription])
+
+  if (!isAuthenticated) {
+    return <AuthModal onClose={() => setShowAuth(false)} />
+  }
 
   return (
     <div className="page">
