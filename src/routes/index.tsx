@@ -62,7 +62,7 @@ function Home() {
           },
         })
 
-        const text = result.text?.trim() ?? ''
+        const text = result.text.trim()
         setTranscription(text)
 
         if (text) {
