@@ -1,0 +1,22 @@
+{
+  "projectName": "talk_to_me",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "npm",
+  "includeExamples": false,
+  "tailwind": true,
+  "addOnOptions": {},
+  "envVarValues": {
+    "CONVEX_DEPLOYMENT": "Talk to me",
+    "VITE_CONVEX_URL": "https://joyous-gecko-393.convex.site"
+  },
+  "git": false,
+  "install": true,
+  "routerOnly": false,
+  "version": 1,
+  "framework": "react",
+  "chosenAddOns": [
+    "eslint",
+    "convex"
+  ]
+}
