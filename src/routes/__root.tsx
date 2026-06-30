@@ -36,6 +36,27 @@ export const Route = createRootRoute({
         type: 'image/x-icon',
       },
     ],
+    // Ajout des scripts Google Analytics ici
+    scripts: [
+      {
+        async: true,
+        src: 'https://www.googletagmanager.com/gtag/js?id=G-JSFKF4MB3X',
+      },
+      {
+        children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-JSFKF4MB3X');
+        `,
+      },
+      // AJOUTEZ LE SCRIPT ADSENSE ICI :
+      {
+        async: true,
+        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336851208490667',
+        crossOrigin: 'anonymous',
+      },
+    ],
   }),
   shellComponent: RootDocument,
 })

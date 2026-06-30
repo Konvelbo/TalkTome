@@ -164,6 +164,9 @@ function Home() {
             />
           </section>
         )}
+        <section className="mt-8 mb-4 w-full">
+          <AdBanner variant="footer" />
+        </section>
       </main>
 
       <AboutSection />
