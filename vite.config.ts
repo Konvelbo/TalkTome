@@ -5,10 +5,15 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// On utilise une fonction pour accéder à la commande (dev ou build)
 export default defineConfig(({ command }) => {
   return {
     resolve: { tsconfigPaths: true },
+
+    // Add this SSR block to tell Vite to bundle GSAP during Server-Side Rendering
+    ssr: {
+      noExternal: ['gsap', '@gsap/react'],
+    },
+
     plugins: [
       devtools(),
       tailwindcss(),
