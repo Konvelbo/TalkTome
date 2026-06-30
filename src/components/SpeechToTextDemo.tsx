@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 // ─── CSS injected once ──────────────────────────────────────────────────────
 const DEMO_STYLES = `
 .std-frame {
-  width: 1500px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
   background: #FFFFFF;
   border-radius: 18px;
   box-shadow: 0 1px 2px rgba(20,19,15,0.04), 0 30px 60px -20px rgba(20,19,15,0.18);
@@ -13,7 +14,9 @@ const DEMO_STYLES = `
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: #14130F;
   -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
 }
+.std-frame * { box-sizing: border-box; }
 .std-chrome {
   display: flex;
   align-items: center;
@@ -45,7 +48,7 @@ const DEMO_STYLES = `
 .std-ctrl svg { width: 13px; height: 13px; }
 
 .std-app {
-  padding: 64px 48px 56px;
+  padding: clamp(36px, 8vw, 64px) clamp(20px, 6vw, 48px) clamp(32px, 7vw, 56px);
   min-height: 560px;
   position: relative;
   overflow: hidden;
@@ -75,18 +78,19 @@ const DEMO_STYLES = `
 }
 
 .std-hero {
-  text-align: center; margin-top: 68px;
+  text-align: center; margin-top: clamp(32px, 8vw, 68px);
   position: relative; z-index: 1;
 }
 .std-hero h1 {
   font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700; font-size: 42px;
+  font-weight: 700; font-size: clamp(28px, 6vw, 42px);
   line-height: 1.12; letter-spacing: -0.01em;
   margin: 0 0 14px;
 }
 .std-sub {
-  color: #767369; font-size: 15.5px; line-height: 1.55;
+  color: #767369; font-size: clamp(14px, 3.4vw, 15.5px); line-height: 1.55;
   margin: 0 auto 30px; max-width: 380px;
+  padding: 0 8px;
 }
 .std-pill {
   display: inline-flex; align-items: center; gap: 7px;
@@ -175,9 +179,9 @@ const DEMO_STYLES = `
 .std-progress-bar { height: 100%; width: 0%; background: #14130F; border-radius: 99px; }
 
 .std-card {
-  margin: 40px auto 0; max-width: 560px;
+  margin: 40px auto 0; max-width: 560px; width: 100%;
   background: #FFFFFF; border: 1px solid #E6E3DC;
-  border-radius: 14px; padding: 22px 26px 24px;
+  border-radius: 14px; padding: clamp(16px, 4vw, 22px) clamp(16px, 5vw, 26px) clamp(18px, 4.5vw, 24px);
   opacity: 0; transform: translateY(14px);
   transition: opacity .45s ease, transform .45s ease;
   position: relative; z-index: 1; text-align: left;
@@ -214,6 +218,7 @@ const DEMO_STYLES = `
 
 .std-export-row {
   display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
   opacity: 0; transform: translateY(6px);
   transition: opacity .35s ease, transform .35s ease;
 }
@@ -252,6 +257,91 @@ const DEMO_STYLES = `
   .std-ring, .std-spinner-ring,
   .std-waveform span, .std-status .std-dot,
   .std-transcript .std-caret { animation-duration: 0.001ms !important; }
+}
+
+/* ─── Responsive: tablette ───────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .std-chrome { padding: 11px 14px; gap: 12px; }
+  .std-urlbar { font-size: 11.5px; }
+  .std-ctrl { width: 28px; height: 28px; }
+
+  .std-badge {
+    position: static;
+    display: inline-block;
+    margin-bottom: 18px;
+  }
+  .std-topbar { flex-wrap: wrap; gap: 10px; }
+  .std-signout { font-size: 12px; padding: 7px 14px; }
+
+  .std-pill { margin-bottom: 34px; }
+
+  .std-btn-wrap { width: 84px; height: 84px; }
+  .std-record-btn { width: 84px; height: 84px; }
+  .std-record-btn svg { width: 26px; height: 26px; }
+
+  .std-export-row { justify-content: flex-start; }
+  .std-export-label { width: 100%; margin: 0 0 6px; }
+}
+
+/* ─── Responsive: mobile ─────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .std-frame { border-radius: 14px; }
+  .std-app { padding: 28px 16px 32px; min-height: auto; }
+
+  .std-badge {
+    font-size: 9.5px;
+    padding: 4px 8px;
+  }
+
+  .std-brand { font-size: 13.5px; gap: 7px; }
+  .std-brand svg { width: 16px; height: 16px; }
+  .std-signout { font-size: 11px; padding: 6px 12px; }
+
+  .std-hero h1 { font-size: 26px; }
+  .std-sub { font-size: 13.5px; max-width: 280px; }
+
+  .std-pill {
+    font-size: 12px; padding: 7px 13px; gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .std-btn-wrap { width: 72px; height: 72px; }
+  .std-record-btn { width: 72px; height: 72px; }
+  .std-record-btn svg { width: 22px; height: 22px; }
+  .std-ring { inset: -10px; }
+  .std-spinner-ring { inset: -6px; }
+
+  .std-status { font-size: 12.5px; }
+
+  .std-progress-wrap { width: 75%; max-width: 200px; }
+
+  .std-card { margin-top: 28px; }
+  .std-card-head { flex-wrap: wrap; gap: 8px; }
+  .std-card-actions { gap: 6px; }
+  .std-ghost-btn { font-size: 11.5px; padding: 5px 10px; }
+
+  .std-transcript { font-size: 14px; }
+
+  .std-export-row { gap: 8px; }
+  .std-ex-btn {
+    font-size: 12px; padding: 7px 10px;
+    flex: 1 1 calc(50% - 8px);
+    justify-content: center;
+  }
+  .std-toast {
+    position: static;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 3px;
+  }
+}
+
+@media (max-width: 360px) {
+  .std-hero h1 { font-size: 23px; }
+  .std-btn-wrap { width: 64px; height: 64px; }
+  .std-record-btn { width: 64px; height: 64px; }
+  .std-record-btn svg { width: 20px; height: 20px; }
 }
 `
 

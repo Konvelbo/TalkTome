@@ -766,6 +766,14 @@ body {
   /* soft shadow to transition */
 }
 
+@media (max-width: 640px) {
+  .about-section {
+    padding: 3rem 1rem 4rem;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+  }
+}
+
 .about-content-wrapper {
   max-width: 1500px;
   margin: 0 auto;
@@ -819,8 +827,7 @@ body {
 
 .about-video {
   width: 100%;
-  /*max-width: 1000px;*/
-  aspect-ratio: 21/13;
+  max-width: 1500px;
   background: #1a1a1a;
   border: 1px solid #333;
   border-radius: 16px;
@@ -830,6 +837,7 @@ body {
   text-align: center;
   padding: 1.5rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
 
 .video-placeholder-text {
