@@ -24,19 +24,14 @@ export function AdBanner({ variant = 'footer' }: AdBannerProps) {
   return (
     <div
       className={`ad-banner ad-banner--${variant} flex justify-center w-full overflow-hidden`}
-      style={{
-        maxHeight: '100px',
-      }} /* Sécurité supplémentaire pour bloquer la hauteur */
-      aria-label="Advertisement"
+      style={{ maxHeight: '100px' }} // La div fait 100px max
     >
       <ins
         ref={adRef}
         className="adsbygoogle"
-        /* On force une hauteur de 90px (standard pour les bannières) */
-        style={{ display: 'block', width: '100%', height: '180px' }}
+        style={{ display: 'block', width: '100%', height: '90px' }} // La pub fait 90px (au lieu de 180px)
         data-ad-client="ca-pub-1336851208490667"
-        // data-ad-slot="1234567890"
-        data-ad-format="horizontal" /* ICI : On demande explicitement une bannière horizontale */
+        data-ad-format="horizontal"
         data-full-width-responsive="true"
       />
     </div>
