@@ -8,7 +8,7 @@
   "addOnOptions": {},
   "envVarValues": {
     "CONVEX_DEPLOYMENT": "Talk to me",
-    "VITE_CONVEX_URL": "https://joyous-gecko-393.convex.site"
+    "VITE_CONVEX_URL": "https://joyous-gecko-393.convex.cloud"
   },
   "git": false,
   "install": true,
@@ -17,6 +17,7 @@
   "framework": "react",
   "chosenAddOns": [
     "eslint",
+    "netlify",
     "convex"
   ]
 }
