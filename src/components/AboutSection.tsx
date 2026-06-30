@@ -56,7 +56,8 @@ export function AboutSection() {
               Built on top of Groq Whisper v3, this Application provides
               real-time, lightning-fast transcription. Just speak into your
               microphone and get accurate results instantly. Powered by TanStack
-              Start, Convex, and NanoBanana themes.
+              Start, Convex.For more details, please consult our GitHub page
+              (link in the footer).
             </p>
           </div>
 

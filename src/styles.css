@@ -67,7 +67,7 @@ body {
   justify-content: center;
   padding: 0 1rem 3rem;
   gap: 2rem;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100dvh - 70px);
 }
 
 /* ─── NavBar ──────────────────────────────────────────────── */
@@ -401,6 +401,7 @@ body {
 .hero {
   width: 100%;
   max-width: 600px;
+  min-height: 58vh;
   margin-top: 0;
   display: flex;
   justify-content: center;
