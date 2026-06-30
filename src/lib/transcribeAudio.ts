@@ -1,6 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 import Groq from 'groq-sdk'
 
+const MAX_AUDIO_BYTES = 25 * 1024 * 1024 // Groq's direct-upload limit (whisper-large-v3)
+
 export const transcribeAudio = createServerFn({ method: 'POST' })
     .validator(
         (data: unknown) => data as { audioBase64: string; mimeType: string; language?: string },
@@ -13,6 +15,13 @@ export const transcribeAudio = createServerFn({ method: 'POST' })
 
         // Convert base64 to Buffer then to File
         const buffer = Buffer.from(data.audioBase64, 'base64')
+
+        // Defensive check — the client also validates this, but uploaded
+        // files bypass that check if someone calls the endpoint directly.
+        if (buffer.byteLength > MAX_AUDIO_BYTES) {
+            throw new Error('Audio file is too large (max 25MB).')
+        }
+
         const blob = new Blob([buffer], { type: data.mimeType || 'audio/webm' })
         const file = new File([blob], 'audio.webm', { type: data.mimeType || 'audio/webm' })
 

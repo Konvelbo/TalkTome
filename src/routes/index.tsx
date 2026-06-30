@@ -5,6 +5,7 @@ import { api } from '../../convex/_generated/api'
 
 import { NavBar } from '../components/NavBar'
 import { RecordButton } from '../components/RecordButton'
+import { FileUpload } from '../components/FileUpload'
 import { LanguageSelector } from '../components/LanguageSelector'
 import { TranscriptionCard } from '../components/TranscriptionCard'
 import { AdBanner } from '../components/AdBanner'
@@ -16,6 +17,20 @@ import { useLocalStorage } from '../hooks/useLocalStorage'
 import { transcribeAudio } from '../lib/transcribeAudio'
 
 export const Route = createFileRoute('/')({ component: Home })
+
+// Formats accepted by Groq's whisper-large-v3 endpoint
+const ACCEPTED_EXTENSIONS = [
+  '.flac',
+  '.mp3',
+  '.mp4',
+  '.mpeg',
+  '.mpga',
+  '.m4a',
+  '.ogg',
+  '.wav',
+  '.webm',
+]
+const MAX_FILE_SIZE = 25 * 1024 * 1024 // 25MB — Groq's direct-upload limit
 
 function Home() {
   const recorder = useAudioRecorder()
@@ -30,22 +45,19 @@ function Home() {
   const [showAuth, setShowAuth] = useState(false)
   const processedBlobRef = useRef<Blob | null>(null)
   const [countRecord, setCountRecord] = useState<number>(0)
+  const [showUploadinput, setShowUploadinput] = useState<boolean>(true)
 
   const { isAuthenticated } = useConvexAuth()
 
   const saveTranscription = useConvexMutation(api.transcriptions.save)
 
-  // Trigger transcription when a new audioBlob is produced
-  useEffect(() => {
-    if (!recorder.audioBlob || recorder.audioBlob === processedBlobRef.current)
-      return
-    processedBlobRef.current = recorder.audioBlob
+  // Shared logic: send any audio Blob (from the mic or from a file) to the
+  // transcription server function.
+  const processBlob = useCallback(
+    async (blob: Blob) => {
+      setIsLoading(true)
+      setError(null)
 
-    const blob = recorder.audioBlob
-    setIsLoading(true)
-    setError(null)
-
-    const run = async () => {
       try {
         const arrayBuffer = await blob.arrayBuffer()
         const bytes = new Uint8Array(arrayBuffer)
@@ -81,21 +93,37 @@ function Home() {
       } finally {
         setIsLoading(false)
       }
-    }
+    },
+    [language, saveTranscription, setTranscription],
+  )
 
-    run()
-  }, [recorder.audioBlob])
+  // Trigger transcription when a new audioBlob is produced by the recorder
+  useEffect(() => {
+    if (!recorder.audioBlob || recorder.audioBlob === processedBlobRef.current)
+      return
+    processedBlobRef.current = recorder.audioBlob
+    processBlob(recorder.audioBlob)
+  }, [recorder.audioBlob, processBlob])
+
+  // Anonymous-user usage gate, shared between recording and file upload
+  const checkUsageAllowed = useCallback(() => {
+    const blocked = !isAuthenticated && countRecord >= 4
+    setCountRecord((i) => i + 1)
+    if (blocked) {
+      setShowAuth(true)
+      return false
+    }
+    return true
+  }, [isAuthenticated, countRecord])
 
   const handleStart = useCallback(async () => {
-    setCountRecord((i) => i + 1)
-    if (!isAuthenticated && countRecord >= 4) {
-      return setShowAuth(true)
-    }
+    if (!checkUsageAllowed()) return
+    setShowUploadinput(false)
     processedBlobRef.current = null
     setTranscription('')
     setError(null)
     await recorder.start()
-  }, [recorder, setTranscription])
+  }, [checkUsageAllowed, recorder, setTranscription])
 
   const handleStop = useCallback(() => {
     recorder.stop()
@@ -107,6 +135,34 @@ function Home() {
     setError(null)
     processedBlobRef.current = null
   }, [recorder, setTranscription])
+
+  const handleFileSelected = useCallback(
+    (file: File) => {
+      const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
+      const looksLikeAudio =
+        ACCEPTED_EXTENSIONS.includes(ext) ||
+        file.type.startsWith('audio/') ||
+        file.type.startsWith('video/')
+
+      if (!looksLikeAudio) {
+        setError(
+          'Unsupported file format. Use mp3, wav, m4a, ogg, flac, or webm.',
+        )
+        return
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setError('File is too large (max 25MB).')
+        return
+      }
+      if (!checkUsageAllowed()) return
+
+      processedBlobRef.current = null
+      recorder.reset()
+      setError(null)
+      processBlob(file)
+    },
+    [checkUsageAllowed, processBlob, recorder],
+  )
 
   return (
     <div className="page">
@@ -137,11 +193,21 @@ function Home() {
                 onStart={handleStart}
                 onStop={handleStop}
               />
+
+              <div className="hero-divider">
+                <span>or</span>
+              </div>
+
+              <FileUpload
+                disabled={recorder.isRecording || isLoading}
+                onFileSelected={handleFileSelected}
+                showUploadinput={showUploadinput}
+              />
             </div>
 
             {(recorder.error || error) && (
               <p className="error-msg" role="alert">
-                Something went wrong.Try again !
+                {error || recorder.error}
               </p>
             )}
           </div>
