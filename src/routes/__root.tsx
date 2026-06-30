@@ -32,7 +32,7 @@ export const Route = createRootRoute({
       },
       {
         rel: 'icon',
-        href: '../../public/favicon.ico',
+        href: '/favicon.ico',
         type: 'image/x-icon',
       },
     ],

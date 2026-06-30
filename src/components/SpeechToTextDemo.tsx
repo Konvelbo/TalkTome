@@ -307,9 +307,12 @@ export function SpeechToTextDemo() {
   const btnTxtRef = useRef<HTMLDivElement>(null)
   const btnPdfRef = useRef<HTMLDivElement>(null)
   const btnDocxRef = useRef<HTMLDivElement>(null)
+  const btnMdRef = useRef<HTMLDivElement>(null)
 
   const [paused, setPaused] = useState(false)
   const pausedRef = useRef(false)
+  // AJOUT : Remplacement de la variable locale par un useRef pour éviter l'erreur de l'analyseur statique
+  const cancelledRef = useRef(false)
 
   // Keep ref in sync with state so the async loop can read it
   const handleTogglePause = () => {
@@ -330,7 +333,8 @@ export function SpeechToTextDemo() {
 
   // Main animation loop
   useEffect(() => {
-    let cancelled = false
+    // Réinitialisation de la ref au montage de l'effet
+    cancelledRef.current = false
     const isPaused = () => pausedRef.current
 
     const buildWaveform = () => {
@@ -357,7 +361,7 @@ export function SpeechToTextDemo() {
         statusRef.current.innerHTML = '<span>Tap to record</span>'
       cardRef.current?.classList.remove('show')
       exportRowRef.current?.classList.remove('show')
-      ;[btnTxtRef, btnPdfRef, btnDocxRef].forEach((r) =>
+      ;[btnTxtRef, btnPdfRef, btnDocxRef, btnMdRef].forEach((r) =>
         r.current?.classList.remove('active'),
       )
       if (transcriptRef.current) transcriptRef.current.innerHTML = ''
@@ -384,10 +388,10 @@ export function SpeechToTextDemo() {
     const runLoop = async () => {
       buildWaveform()
 
-      while (!cancelled) {
+      while (!cancelledRef.current) {
         resetIdle()
         await pausableWait(2000, isPaused)
-        if (cancelled) break
+        if (cancelledRef.current) break
 
         // — start recording —
         await pressBtn()
@@ -407,7 +411,7 @@ export function SpeechToTextDemo() {
           },
           isPaused,
         )
-        if (cancelled) break
+        if (cancelledRef.current) break
 
         // — stop → processing —
         await pressBtn()
@@ -428,7 +432,7 @@ export function SpeechToTextDemo() {
           },
           isPaused,
         )
-        if (cancelled) break
+        if (cancelledRef.current) break
 
         spinnerRef.current?.classList.remove('show')
         progressWrapRef.current?.classList.remove('show')
@@ -440,20 +444,20 @@ export function SpeechToTextDemo() {
         if (transcriptRef.current)
           await typeText(transcriptRef.current, TRANSCRIPT, 22)
         await pausableWait(300, isPaused)
-        if (cancelled) break
+        if (cancelledRef.current) break
 
         exportRowRef.current?.classList.add('show')
-        const exportBtns = [btnTxtRef, btnPdfRef, btnDocxRef]
+        const exportBtns = [btnTxtRef, btnPdfRef, btnDocxRef, btnMdRef]
         for (const ref of exportBtns) {
           ref.current?.classList.add('active')
           await pausableWait(750, isPaused)
           ref.current?.classList.remove('active')
           await pausableWait(150, isPaused)
-          if (cancelled) break
+          if (cancelledRef.current) break
         }
 
         await pausableWait(1600, isPaused)
-        if (cancelled) break
+        if (cancelledRef.current) break
         cardRef.current?.classList.remove('show')
         await pausableWait(550, isPaused)
       }
@@ -461,9 +465,8 @@ export function SpeechToTextDemo() {
 
     runLoop()
     return () => {
-      cancelled = true
+      cancelledRef.current = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -652,6 +655,19 @@ export function SpeechToTextDemo() {
                 </svg>
                 DOCX
                 <span className="std-toast">Saved transcript.docx</span>
+              </div>
+              <div ref={btnMdRef} className="std-ex-btn">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2v6h6" />
+                </svg>
+                MD
+                <span className="std-toast">Saved transcript.md</span>
               </div>
             </div>
           </div>

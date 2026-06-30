@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { Github } from 'lucide-react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 import { SpeechToTextDemo } from './SpeechToTextDemo'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)

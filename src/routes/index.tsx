@@ -29,6 +29,7 @@ function Home() {
   const [error, setError] = useState<string | null>(null)
   const [showAuth, setShowAuth] = useState(false)
   const processedBlobRef = useRef<Blob | null>(null)
+  const [countRecord, setCountRecord] = useState<number>(0)
 
   const { isAuthenticated } = useConvexAuth()
 
@@ -86,6 +87,10 @@ function Home() {
   }, [recorder.audioBlob])
 
   const handleStart = useCallback(async () => {
+    setCountRecord((i) => i + 1)
+    if (!isAuthenticated && countRecord >= 4) {
+      return setShowAuth(true)
+    }
     processedBlobRef.current = null
     setTranscription('')
     setError(null)
@@ -102,10 +107,6 @@ function Home() {
     setError(null)
     processedBlobRef.current = null
   }, [recorder, setTranscription])
-
-  if (!isAuthenticated) {
-    return <AuthModal onClose={() => setShowAuth(false)} />
-  }
 
   return (
     <div className="page">
@@ -140,7 +141,7 @@ function Home() {
 
             {(recorder.error || error) && (
               <p className="error-msg" role="alert">
-                {recorder.error ?? error}
+                Something went wrong.Try again !
               </p>
             )}
           </div>
