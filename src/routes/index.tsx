@@ -15,6 +15,8 @@ import { AuthModal } from '../components/AuthModal'
 import { useAudioRecorder } from '../hooks/useAudioRecorder'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { transcribeAudio } from '../lib/transcribeAudio'
+import { SpreeshToText } from '#/components/heroSectionComps/spreeshToText'
+import { Denoiser } from '#/components/heroSectionComps/Denoiser'
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -46,6 +48,7 @@ function Home() {
   const processedBlobRef = useRef<Blob | null>(null)
   const [countRecord, setCountRecord] = useState<number>(0)
   const [showUploadinput, setShowUploadinput] = useState<boolean>(true)
+  const [featureShoice, setFeatureShoice] = useState<string>('spreeshToText')
 
   const { isAuthenticated } = useConvexAuth()
 
@@ -166,52 +169,39 @@ function Home() {
 
   return (
     <div className="page">
-      <NavBar onLoginClick={() => setShowAuth(true)} />
+      <NavBar
+        onLoginClick={() => setShowAuth(true)}
+        setFeatureShoice={setFeatureShoice}
+      />
 
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
 
       <main className="main">
-        {/* Hero */}
-        <section className="hero">
-          <div className="hero-content">
-            <h1 className="hero-title">Speak. Transcribe. Export.</h1>
-            <p className="hero-subtitle">
-              Convert your voice into text instantly — in any language.
-            </p>
+        {/* Hero
+          language,
+          setLanguage,
+          recorder,
+          isLoading,
+          handleFileSelected,
+          showUploadinput,
+          error,
+          */}
 
-            <div className="hero-controls">
-              <LanguageSelector
-                value={language}
-                onChange={setLanguage}
-                disabled={recorder.isRecording || isLoading}
-              />
+        {featureShoice == 'spreeshToText' && (
+          <SpreeshToText
+            language={language}
+            setLanguage={setLanguage}
+            recorder={recorder}
+            isLoading={isLoading}
+            handleFileSelected={handleFileSelected}
+            showUploadinput={showUploadinput}
+            error={error}
+            handleStop={handleStop}
+            handleStart={handleStart}
+          />
+        )}
 
-              <RecordButton
-                isRecording={recorder.isRecording}
-                isLoading={isLoading}
-                duration={recorder.duration}
-                onStart={handleStart}
-                onStop={handleStop}
-              />
-
-              <div className="hero-divider">
-                <span>or</span>
-              </div>
-
-              <FileUpload
-                disabled={recorder.isRecording || isLoading}
-                onFileSelected={handleFileSelected}
-                showUploadinput={showUploadinput}
-              />
-            </div>
-
-            {(recorder.error || error) && (
-              <p className="error-msg" role="alert">
-                {error || recorder.error}
-              </p>
-            )}
-          </div>
-        </section>
+        {featureShoice == 'denoiser' && <Denoiser />}
 
         {/* Ad displayed while loading (good impression slot) */}
         {isLoading && (
