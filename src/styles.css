@@ -70,7 +70,7 @@ body {
   min-height: calc(100dvh - 70px);
 }
 
-/* ─── NavBar ──────────────────────────────────────────────── */
+/* ─── NavBar ─────────────────────────────────────────────── */
 .navbar {
   position: sticky;
   top: 0;
@@ -82,6 +82,43 @@ body {
   background: #fafafaee;
   backdrop-filter: blur(8px);
   border-bottom: 1px solid #e5e5e5;
+}
+
+/* Éléments desktop uniquement — cachés sur mobile */
+.navbar-desktop-only {
+  display: none !important;
+}
+
+/* Bouton burger — mobile uniquement */
+.navbar-burger {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: currentColor;
+  flex-shrink: 0;
+  margin-left: auto; /* pousse le burger tout à droite */
+}
+
+/* Drawer — mobile uniquement */
+.mobile-drawer {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .navbar-desktop-only {
+    display: flex !important;
+    align-items: center;
+  }
+  .navbar-burger {
+    display: none !important;
+  }
+  .mobile-drawer {
+    display: none !important;
+  }
 }
 
 .navbar-logo {
@@ -106,9 +143,12 @@ body {
   color: #fafafaee;
   border-radius: 10px;
   font-size: 13px;
-  padding: '20';
-  width: 120px;
+  padding: 0 20px;
   height: 33px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
   transition: all 0.3s ease;
 }
 .navBar-button:hover {
